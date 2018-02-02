@@ -1,0 +1,88 @@
+<html>
+  <head>
+    <title>Homepage</title>
+
+    <style>
+      body{
+          margin: 0 auto;
+          max-width: 50em;
+          font-family:Consolas, monospace;
+
+      }
+      .ascii{
+          font-family: monospace;
+          white-space: pre;
+      
+      }
+      li{
+          float:left;
+          padding-left: 1em;
+          list-style: none;
+      }
+      .airings{
+          clear: both;
+      }
+      a{
+          text-decoration: none;
+          color:#01579B;
+      }
+      a:hover{
+          color: #FFF;
+          background-color: #01579B;
+      }
+    </style>
+    <script src="countdown.js"></script>
+  </head>
+  <body>
+    <p class="ascii">
+            ,,,                 ;;                      ;,   ; ;
+            ;,     ;;,          ;;                   ;;;;;;;;  ; ;
+          ,;       ;,  ;,    ;;;;;;;;;                  ;;  
+         ,;         ;,          ;;                 ;;;;;;;;;;;;; 
+         ;;         ;;          ;;  .,,,,               ;; 
+         ;;         ;;          ;;  ,''''              ,;; 
+          ;,       ,;           ;;                 ,;''    
+           ;,     ,;            ;;  ;,             ;;       
+            ;;;;;;;             ;;    ;;;;;,,      \`;;;;;,, 
+    </p>
+
+    <div>
+      <ul>
+        <li>
+          <a href="https://gmail.com/">[gmail]</a>
+        </li>
+        <li>
+          <a href="https://youtube.com/">[youtube]</a>
+        </li>
+        <li>
+          <a href="https://news.ycombinator.com/">[hn]</a>
+        </li>
+        <li>
+          <a href="https://reddit.com/r/programming/">[r/programming]</a>
+        </li>
+        <li>
+          <a href="https://lainchan.org/λ/catalog.html">[/λ/]</a>
+        </li>
+        <li>
+          <a href="https://github.com/avuxo/">[github]</a>
+        </li>
+      </ul>
+    </div>
+
+    <br><br>
+    
+    <div class="airings" onload="updateText()">
+      <p class="showLabel">Citrus</p>
+      <p id="Citrus"></p>
+
+      <p class="showLabel">Fate/Extra</p>
+      <p id="Fate-Extra"></p>
+
+      <p class="showLabel">After the Rain</p>
+      <p id="After-The-Rain"></p>
+    </div>
+
+    
+
+  </body>
+<html>
