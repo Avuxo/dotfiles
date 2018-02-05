@@ -46,3 +46,16 @@ function updateText(){
 }
 
 setInterval(updateText, 1000);
+
+document.onkeydown = function(e){
+    switch(event.keyCode){
+    case 77: window.location.href = "https://gmail.com/";                       break;
+    case 89: window.location.href = "https://youtube.com";                      break;
+    case 72: window.location.href = "https://news.ycombinator.com";             break;
+    case 80: window.location.href = "https://reddit.com/r/programming/";        break;
+    case 76: window.location.href = "https://lainchan.org/%CE%BB/catalog.html"; break;
+    case 71: window.location.href = "https://github.com/avuxo/";                break;
+        
+        
+    }
+}
