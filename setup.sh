@@ -9,7 +9,8 @@
 # -e: compile emacs with setup        #
 # -i: configure i3 during setup       #
 # -h: configure homepage during setup #
-######################################
+# -m: configure midi file download    #
+#######################################
 
 
 ############
@@ -37,6 +38,25 @@ setupi3(){
 setupHomepage(){
     cd SCRIPTDIR
     mv homepage $HOME/workspace
+}
+
+# download a bunch of midi files
+setupMidi(){
+    # vgmusic url
+    DLURL='https://www.vgmusic.com/music/console/nintendo/snes/'
+
+    mkdir $HOME/.midi
+    cd $HOME/.midi
+    mkdir music
+    cd music
+
+    # get all the midi files from vgmusic
+    wget $DLURL
+    cat index.html | grep -o "\".*.mid\"" | sed -e 's/\"//g' | xargs printf "$DLURL%s\n" | xargs wget
+    
+    rm index.html
+
+    cd SCRIPTDIR
 }
 
 ###########
@@ -75,5 +95,6 @@ while getopts ":eih" opt; do
         e) compileEmacs  ;;
         i) setupi3       ;;
         h) setupHomepage ;;
+        m) setupMidi     ;;
     esac
 done
