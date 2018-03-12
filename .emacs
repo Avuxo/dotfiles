@@ -58,7 +58,7 @@
  '(magit-diff-use-overlays nil)
  '(package-selected-packages
    (quote
-    (pug-mode latex-math-preview go-mode powershell rust-mode exec-path-from-shell cmake-ide use-package slime company-irony-c-headers company-irony gdb-mi company clojure-mode rainbow-mode js2-mode)))
+    (lua-mode web-mode pug-mode latex-math-preview go-mode powershell rust-mode exec-path-from-shell cmake-ide use-package slime company-irony-c-headers company-irony gdb-mi company clojure-mode rainbow-mode js2-mode)))
  '(pos-tip-background-color "#FFFACE")
  '(pos-tip-foreground-color "#272822")
  '(vc-annotate-background nil)
@@ -192,3 +192,15 @@
 
 ;; display the time in the mode line
 (display-time-mode 1)
+
+;; load web-mode for all html files for javascript support.
+(require 'web-mode)
+(add-to-list 'auto-mode-alist '("\\.html$" . web-mode))
+
+
+;; org-mode setup
+(require 'org)
+(define-key global-map "\C-cl" 'org-store-link)
+(define-key global-map "\C-ca" 'org-agenda)
+(setq org-log-done t)
+(setq org-agenda-files (list "~/workspace/todo.org"))

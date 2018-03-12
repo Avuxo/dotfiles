@@ -76,6 +76,8 @@ general(){
 
     mv srm $HOME/workspace/scripts
 
+    echo "* Tasks" >> $HOME/workspace/todo.org
+
 }
 
 
