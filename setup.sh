@@ -74,7 +74,7 @@ general(){
     mkdir $HOME/workspace
     mkdir $HOME/workspace/scripts
 
-    mv srm $HOME/workspace/scripts
+    mv ./bin/srm $HOME/workspace/scripts
 
     echo "* Tasks" >> $HOME/workspace/todo.org
 
