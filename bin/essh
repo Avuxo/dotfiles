@@ -1,0 +1,31 @@
+#!/bin/bash
+
+# essh
+# extra ssh
+# script that let's me select from a list of IPs and it will request the key pass
+# and user. this is for managing a few EC2 servers I have for personal projects like
+# discord bots.
+
+# I don't do this for anything security critical and I don't share my random
+# key directory with important keys.
+
+# config
+sshDir=$HOME/.ssh
+
+# // file looks like this //
+# 61.123.3.119 # description
+# 13.412.9.613 # desc can be anything
+# ....
+# // EOF //
+
+# print out the list of IPs
+echo "Extra SSH script..."
+cat $HOME/.essh; echo
+read -p "IP #? >> "
+# get IP and remove comment
+eIP=`sed -n "$eChoice p" < $HOME/.essh | sed -e "s/#.*//"`
+# read the essh username
+read -p "username >> " eUsername
+read -p "ssh keyname >> " eKeyname
+# ssh connect
+ssh -i $sshDir/$eKeyname.pem $eUsername@$eIP
