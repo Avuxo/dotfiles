@@ -1,0 +1,18 @@
+#!/bin/bash
+
+# NFID
+# Number Files in Directory
+# This script renames all the files in the current directory to
+# n.f where 'n' is the index in the file and 'f' is the original file
+# extension
+
+
+# the index that it will be named
+indexOfFile=0
+for file in *; do
+    # get the extension of the filename
+    ext=`echo $file | awk -F . '{print $NF}'`
+    # rename all the files
+    mv $file $indexOfFile.$ext
+    let indexOfFile=indexOfFile+1
+done
