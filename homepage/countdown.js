@@ -1,8 +1,7 @@
 /*list of shows that will be put in the homepage*/
 var shows = [
-    {'show' : "Citrus",         'targetDay' : 6, 'targetTime' : 10},
-    {'show' : "Fate/Extra",     'targetDay' : 7, 'targetTime' : 10},
-    {'show' : "After The Rain", 'targetDay' : 5, 'targetTime' : 11}
+    {'show' : "Steins;Gate 0",  'targetDay' : 3, 'targetTime' : 10},
+    {'show' : "Fate/Extra",     'targetDay' : 7, 'targetTime' : 10}
 ];
 
 function timeToAir(show){
