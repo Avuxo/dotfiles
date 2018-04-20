@@ -1,7 +1,6 @@
 /*list of shows that will be put in the homepage*/
 var shows = [
-    {'show' : "Steins;Gate 0",  'targetDay' : 3, 'targetTime' : 10},
-    {'show' : "Fate/Extra",     'targetDay' : 7, 'targetTime' : 10}
+    {'show' : "Steins-Gate-0",  'targetDay' : 3, 'targetTime' : 10},
 ];
 
 function timeToAir(show){
@@ -32,10 +31,9 @@ function timeToAir(show){
 
 function updateCountdown(show){
     var time = timeToAir(show);
-    var name = show.show.replace(/ /g, '-').replace(/\//g, '-');
+    var name = show.show;
 
     document.getElementById(name).innerHTML = time;
-    
 }
 
 function updateText(){
@@ -54,7 +52,9 @@ document.onkeydown = function(e){
     case 80: window.location.href = "https://reddit.com/r/programming/";        break;
     case 76: window.location.href = "https://lainchan.org/%CE%BB/catalog.html"; break;
     case 71: window.location.href = "https://github.com/avuxo/";                break;
-        
+    case 52: window.location.href = "https://webmail.gandi.net/";               break;
         
     }
 }
+
+
