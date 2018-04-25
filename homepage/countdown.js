@@ -6,7 +6,7 @@ var shows = [
 function timeToAir(show){
 
     var now = new Date();
-    /*target time*/
+    // the time targeted
     var targetTime = new Date(now.getFullYear(), now.getMonth(),
                               now.getDate()-now.getDay() + show.targetDay, show.targetTime);
 
@@ -15,18 +15,23 @@ function timeToAir(show){
         //todo: reset
     }
 
+    // calculate the different times.
     var seconds = Math.floor(deltaTime / 1000);
     var minutes = Math.floor(seconds / 60);
     var hours   = Math.floor(minutes / 60);
     var days    = Math.floor(hours / 24);
 
-
+    // correct negative values and set them to be positive values
+    if(seconds < 0) seconds = 60 - seconds;
+    if(minutes < 0) minutes = 60 - minutes;
+    if(hours < 0) hours = 60 + hours;
+    if(days < 0) days = 7 + days;
+    
     seconds %= 60;
     minutes %= 60;
     hours   %= 24;
     
     return days + ":" + hours + ":" + minutes + ":" + seconds;
-
 }
 
 function updateCountdown(show){
@@ -39,10 +44,10 @@ function updateCountdown(show){
 function updateText(){
     shows.forEach(function(i){
         updateCountdown(i);
-    })
+    });
 }
 
-setInterval(updateText, 1000);
+ setInterval(updateText, 1000);
 
 document.onkeydown = function(e){
     switch(event.keyCode){
