@@ -12,7 +12,10 @@ function timeToAir(show){
 
     var deltaTime = targetTime.getTime() - now.getTime();
     if(deltaTime <= 0){
-        //todo: reset
+        targetTime = new Date(now.getFullYear(), now.getMonth(),
+                              now.getDate()-now.getDay() + (show.targetDay + 7), show.targetTime);
+        deltaTime = targetTime.getTime() - now.getTime();
+        console.log(targetTime);
     }
 
     // calculate the different times.
@@ -22,15 +25,11 @@ function timeToAir(show){
     var days    = Math.floor(hours / 24);
 
     // correct negative values and set them to be positive values
-    if(seconds < 0) seconds = 60 - seconds;
-    if(minutes < 0) minutes = 60 - minutes;
-    if(hours < 0) hours = 60 + hours;
-    if(days < 0) days = 7 + days;
     
     seconds %= 60;
     minutes %= 60;
     hours   %= 24;
-    
+
     return days + ":" + hours + ":" + minutes + ":" + seconds;
 }
 
