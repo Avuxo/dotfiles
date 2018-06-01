@@ -58,7 +58,7 @@
  '(magit-diff-use-overlays nil)
  '(package-selected-packages
    (quote
-    (lua-mode web-mode pug-mode latex-math-preview go-mode powershell rust-mode exec-path-from-shell cmake-ide use-package slime company-irony-c-headers company-irony gdb-mi company clojure-mode rainbow-mode js2-mode)))
+    (neotree typescript-mode lua-mode web-mode pug-mode latex-math-preview go-mode powershell rust-mode exec-path-from-shell cmake-ide use-package slime company-irony-c-headers company-irony gdb-mi company clojure-mode rainbow-mode js2-mode)))
  '(pos-tip-background-color "#FFFACE")
  '(pos-tip-foreground-color "#272822")
  '(vc-annotate-background nil)
@@ -116,6 +116,9 @@
 
 (global-set-key (kbd "M-SPC") 'set-mark-command)
 (global-set-key (kbd "C-x g") 'goto-line)
+(global-set-key (kbd "C-q") (lambda()
+                              (interactive)(neotree)))
+
 
 (require 'server)
 (if (and (fboundp 'server-running-p)
@@ -193,10 +196,18 @@
 ;; display the time in the mode line
 (display-time-mode 1)
 
+;; display the current column number.
+(setq column-number-mode t)
+
 ;; load web-mode for all html files for javascript support.
 (require 'web-mode)
 (add-to-list 'auto-mode-alist '("\\.html$" . web-mode))
 
+;; use C++ mode for all header files, C headers don't use any extra features.
+(add-to-list 'auto-mode-alist '("\\.h\\'" . c++-mode))
+
+;; use js2-mode for all javascript files (IDE mode).
+(add-to-list 'auto-mode-alist '("\\.js\\'" . js2-mode))
 
 ;; org-mode setup
 (require 'org)
@@ -204,3 +215,5 @@
 (define-key global-map "\C-ca" 'org-agenda)
 (setq org-log-done t)
 (setq org-agenda-files (list "~/workspace/todo.org"))
+;; add path var for OSX
+(exec-path-from-shell-initialize)
