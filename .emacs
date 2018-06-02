@@ -217,3 +217,6 @@
 (setq org-agenda-files (list "~/workspace/todo.org"))
 ;; add path var for OSX
 (exec-path-from-shell-initialize)
+
+;; ESHELL SETTINGS
+(global-set-key (kbd"C-x C-y") 'eshell)
