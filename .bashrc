@@ -26,7 +26,6 @@ calc() {
     python -c "print $*"
 }
 
-# count lines of file
 cl() {
     cat $1 | wc -l
 }
@@ -49,7 +48,6 @@ alias midi="fluidsynth -i ~/.midi/soundfont.sf2"
 alias dsclean="find . -name '.DS_Store' -type f -delete &"
 # start an http server at 127.0.0.1:8080 with ./index.html
 alias localserver='python3 -m http.server 8080'
-# rot-13
 alias rt="tr 'A-Za-z' 'N-ZA-Mn-za-m'"
 # use pcregrep instead of crappy macgrep
 alias grep="pcregrep"
@@ -62,14 +60,18 @@ alias cls="clear; ls"
 alias lsd="echo -ne '\033[0;34m' && find . -type d -maxdepth 1 -not -name '.' | sed -e 's/\.\///' | column && echo -ne '\033[0m'"
 # node debug (for native modules)
 alias nodb="lldb -- `which node`"
-# force kill
-alias fkill="kill -9"
 # list emacs buffers
 alias leb="emacsclient -e '(buffer-list)' | sed -E 's/>( )/\n/g' | tr -d \"#<buffer\" | sed -E 's/\( //g;s/>\)//g'"
 # list npm scripts
 alias scripts="cat package.json | sed -n '/\"scripts\"/,/},/ p'"
 # ls -l
 alias ll="ls -l"
+# node module descriptions
+alias nmd="for dir in node_modules/*; do echo "$dir:"; npm view `echo $dir | sed 's/node_modules\///'` | grep "description"; done"
+# shorthand for curl: λ post '<json data>' <url>
+alias post="curl -X POST -H 'Content-Type: application/json' -d"
+# tmux
+alias tm="TERM=\"xterm-256color\" tmux -u"
 
 # custom prompt - blue = 14, green = 40, red = 9
 parse-current-branch(){
@@ -77,6 +79,7 @@ parse-current-branch(){
 }
 
 PS1="\[$(tput setaf 14)\]┌[\u@\h] - \[$(tput setaf 40)\][\w]\$(parse-current-branch)\n\[$(tput setaf 14)\]└\[$(tput setaf 9)\]λ \[$(tput sgr0)\]"
+
 
 export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
