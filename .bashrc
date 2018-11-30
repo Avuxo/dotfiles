@@ -14,12 +14,19 @@ fwith() {
     grep -rnw $1 -e $2
 }
 
+# really just executes given python code, but I like to use it as a little calculator
 calc() {
     python -c "print $*"
 }
 
+# count lines.
 cl() {
     cat $1 | wc -l
+}
+
+# get line of output from pipe at line n from bottom
+oi() {
+    $2 | tail -n $1 | head -n1
 }
 
 #############
@@ -71,9 +78,14 @@ alias tm="TERM=\"xterm-256color\" tmux -u"
 alias notf="osascript -e 'display notification \"SIKE\"'"
 # strip a given file of escape sequences
 alias escs="sed -e 's/[\x01-\x1F\x7F]//g'"
+# redis daemon shorthand (typing that long name is a pain in the ass and this fits more with other database daemons)
 alias redisd="redis-server"
+# tr delete shrothand
 alias td="tr -d"
+# node version
 alias nv="node --version | td 'v'"
+# duckduck go
+alias ddg="lynx http://duckduckgo.com/"
 
 # single-char for most used commands
 alias l="ls"
