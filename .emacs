@@ -1,7 +1,9 @@
 ;; Ben's emacs config file :^ )
+;; I use emacs compiled for XWindow / Cocoa because its marginally faster (usually)
+;; and has nicer colors with a lot less customization.
 
 ;; list packages and install all in list
-(setq package-list '(js2-mode))
+(defvar package-list '(js2-mode))
 
 (setq package-archives '(("elpa" . "http://tromey.com/elpa/")
                          ("gnu" . "http://elpa.gnu.org/packages/")
@@ -25,9 +27,9 @@
 
 ;;ace-jump-mode & rust-mode
 (add-to-list 'load-path "~/.emacs.d/elpa")
+(require 'rust-mode)
 (require 'ace-jump-mode)
 (define-key global-map (kbd "C-c SPC") 'ace-jump-mode)
-
 
 
 ;;load themes
@@ -40,9 +42,6 @@
  '(ansi-color-names-vector
    ["#272822" "#F92672" "#A6E22E" "#E6DB74" "#66D9EF" "#FD5FF0" "#A1EFE4" "#F8F8F2"])
  '(compilation-message-face (quote default))
- '(custom-safe-themes
-   (quote
-    ("9568a88cf351728b05c983e7afa8ec3e08da00b16b25304feca2c044164bb3ce" "26ebf1964baf529f07ca121231bec4982a0d3e89f6897b19978edd91f8e1eddb" "8d8788b909824e7f491a600ad80b4f70d6571907879d7661651c93cf984fc947" "b33406bff03f0167fc1ce7da9f2bab6742db280e2cf083ec338ffd1176469ee6" "7ef2884658a1fed818a11854c232511fa25721c60083a2695e6ea34ce14777ee" "1bfb58637c50303c23d0f4ce1bb30a01ed722912aba5d1f0f13d7ac0e79a21fa" default)))
  '(fci-rule-color "#3C3D37")
  '(highlight-changes-colors (quote ("#FD5FF0" "#AE81FF")))
  '(highlight-tail-colors
@@ -55,10 +54,11 @@
      ("#A75B00" . 70)
      ("#F309DF" . 85)
      ("#3C3D37" . 100))))
+ '(js-indent-level 2)
  '(magit-diff-use-overlays nil)
  '(package-selected-packages
    (quote
-    (neotree typescript-mode lua-mode web-mode pug-mode latex-math-preview go-mode powershell rust-mode exec-path-from-shell cmake-ide use-package slime company-irony-c-headers company-irony gdb-mi company clojure-mode rainbow-mode js2-mode)))
+    (yaml-mode deft rainbow-delimiters json-mode flycheck ido-vertical-mode neotree typescript-mode lua-mode web-mode pug-mode latex-math-preview go-mode powershell rust-mode js2-mode)))
  '(pos-tip-background-color "#FFFACE")
  '(pos-tip-foreground-color "#272822")
  '(vc-annotate-background nil)
@@ -85,18 +85,25 @@
  '(vc-annotate-very-old-color nil)
  '(weechat-color-list
    (unspecified "#272822" "#3C3D37" "#F70057" "#F92672" "#86C30D" "#A6E22E" "#BEB244" "#E6DB74" "#40CAE4" "#66D9EF" "#FB35EA" "#FD5FF0" "#74DBCD" "#A1EFE4" "#F8F8F2" "#F8F8F0")))
+
  
 ;;C indentation
 (setq-default indent-tabs-mode nil)
 (setq-default c-basic-offset 4)
+
+;;js indentation
+(setq-default indent-tabs-mode nil)
+(setq-default js2-basic-offset 2)
 
 ;;load theme
 (add-to-list 'custom-theme-load-path' "~/emacspackage/themes")
 
 ;;disable menubar / scrollbar
 (menu-bar-mode -1)
-(toggle-scroll-bar -1)
-(tool-bar-mode -1)
+(when (display-graphic-p)
+  (toggle-scroll-bar -1)
+  (tool-bar-mode -1))
+
 
 ;;load theme on startup
 (load-theme 'hitagi)
@@ -116,9 +123,10 @@
 
 (global-set-key (kbd "M-SPC") 'set-mark-command)
 (global-set-key (kbd "C-x g") 'goto-line)
+(global-set-key (kbd "C-x C-j") 'count-matches)
 (global-set-key (kbd "C-q") (lambda()
                               (interactive)(neotree)))
-
+(setq neo-autorefresh nil)
 
 (require 'server)
 (if (and (fboundp 'server-running-p)
@@ -131,15 +139,6 @@
 (global-set-key (kbd "C-x <left>") 'windmove-left)
 (global-set-key (kbd "C-x <right>") 'windmove-right)
 
-;; collapsing code
-(add-hook 'c-mode-common-hook
-  (lambda()
-    (local-set-key (kbd "C-c <right>") 'hs-show-block)
-    (local-set-key (kbd "C-c <left>")  'hs-hide-block)
-    (local-set-key (kbd "C-c <up>")    'hs-hide-all)
-    (local-set-key (kbd "C-c <down>")  'hs-show-all)
-    (hs-minor-mode t)))
-
 ;; company C stuff
 ;;(add-to-list 'company-backends 'company-c-headers)
 
@@ -147,49 +146,10 @@
 (global-linum-mode)
 
 ;; ibuffer
+(require 'ibuffer)
 (global-set-key (kbd "C-x C-b") 'ibuffer)
 (autoload 'ibuffer "ibuffer" "List buffers." t)
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- )
 
-
-;; setup irony mode
-(use-package irony
-  :ensure t
-  :defer t
-  :init
-  (add-hook 'c++-mode-hook 'irony-mode)
-  (add-hook 'c-mode-hook 'irony-mode)
-  (add-hook 'objc-mode-hook 'irony-mode)
-  :config
-  ;; replace the `completion-at-point' and `complete-symbol' bindings in
-  ;; irony-mode's buffers by irony-mode's function
-  (defun my-irony-mode-hook ()
-    (define-key irony-mode-map [remap completion-at-point]
-      'irony-completion-at-point-async)
-    (define-key irony-mode-map [remap complete-symbol]
-      'irony-completion-at-point-async))
-  (add-hook 'irony-mode-hook 'my-irony-mode-hook)
-  (add-hook 'irony-mode-hook 'irony-cdb-autosetup-compile-options))
-
-;; setup company mode
-(use-package company
-  :ensure t
-  :defer t
-  :init (add-hook 'after-init-hook 'global-company-mode)
-  :config
-  (use-package company-irony :ensure t :defer t)
-  (setq company-idle-delay              nil
-	company-minimum-prefix-length   2
-	company-show-numbers            t
-	company-tooltip-limit           20
-	company-dabbrev-downcase        nil
-	company-backends                '((company-irony company-gtags)))
-  :bind ("C-;" . company-complete-common))
 
 (setq org-startup-with-inline-images t)
 
@@ -218,5 +178,94 @@
 ;; add path var for OSX
 (exec-path-from-shell-initialize)
 
+
 ;; ESHELL SETTINGS
 (global-set-key (kbd"C-x C-y") 'eshell)
+
+
+(global-unset-key (kbd"C-x C-u"))
+(global-unset-key (kbd"C-x C-l"))
+
+;; add highlighting for TODO/WRITEME/WRITEME!/TODO/BUG
+(defun hilite-todos ()
+  "Highlight TODOs and such."
+  (highlight-lines-matching-regexp "\\<\\(FIXME\\|WRITEME\\|WRITEME!\\|TODO\\|BUG\\):?"
+       'hi-pink-b)
+)
+
+(add-hook 'c-mode-common-hook 'hilite-todos)
+(add-hook 'js2-mode-hook 'hilite-todos)
+
+;; ido-vertical mode
+(ido-mode 1)
+(ido-vertical-mode 1)
+(require 'ido-vertical-mode)
+(setq ido-vertical-define-keys 'C-n-and-C-p-only)
+
+(defun revert-buffer-no-confirm ()
+  "Revert a buffer without confirmation (taken from SO)."
+  (interactive)
+  (revert-buffer :ignore-auto :noconfirm))
+(global-set-key (kbd "C-x C-l") 'revert-buffer-no-confirm)
+
+;; flycheck setup
+(require 'flycheck)
+(add-hook 'after-init-hook #'global-flycheck-mode)
+(setq flycheck-disabled-checkers '(javascript-jshint))
+(setq flycheck-checkers '(javascript-eslint
+                          json-jsonlint))
+;; Disable jshint, since we prefer eslint checking
+(setq-default flycheck-disabled-checkers
+              (append flycheck-disabled-checkers
+                      '(javascript-jshint)))
+;; Disable json-jsonlist checking for json files
+(setq-default flycheck-disabled-checkers
+              (append flycheck-disabled-checkers
+                      '(json-jsonlist)))
+(eval-after-load 'js-mode
+  '(add-hook 'js-mode-hook #'add-node-modules-path))
+;; Use eslint with these modes
+(flycheck-add-mode 'javascript-eslint 'js-mode)
+(flycheck-add-mode 'javascript-eslint 'js2-mode)
+;; Use jsonlint with these modes
+(flycheck-add-mode 'json-jsonlint 'json-mode)
+
+(defun my/use-eslint-from-node-modules ()
+  (let* ((root (locate-dominating-file
+                (or (buffer-file-name) default-directory)
+                "node_modules"))
+         (eslint (and root
+                      (expand-file-name "node_modules/eslint/bin/eslint.js"
+                                        root))))
+    (when (and eslint (file-executable-p eslint))
+      (setq-local flycheck-javascript-eslint-executable eslint))))
+(add-hook 'flycheck-mode-hook #'my/use-eslint-from-node-modules)
+
+;; gyp
+(setq load-path (cons "~/.emacs.d/elpa/gyp/tools/emacs" load-path))
+(require 'gyp)
+
+(add-hook 'emacs-lisp-mode #'rainbow-delimiters-mode)
+
+;; copy to killring.
+(global-set-key (kbd "C-c C-q") 'kill-ring-save)
+
+;; deft config
+(global-unset-key (kbd "C-x C-d"))
+(global-set-key (kbd "C-x C-d") 'deft)
+(setq deft-extensions '("txt" "tex" "org"))
+(setq deft-directory "~/notes")
+(setq deft-recursive t)
+
+(fset 'consolelog
+   "console.log('")
+(global-set-key (kbd "C-c C-l") 'consolelog)
+
+(defun beflh-fix-quotes ()
+  (interactive)
+  (while (re-search-forward "\"" nil t)
+    (replace-match "'")))
+
+;; footer that FlyCheck insists on for whatever reason.
+(provide '.emacs)
+;;; .emacs ends here
