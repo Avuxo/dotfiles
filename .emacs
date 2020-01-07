@@ -249,6 +249,27 @@
 
 ;; copy to killring.
 (global-set-key (kbd "C-c C-q") 'kill-ring-save)
+(global-unset-key (kbd "C-s"))
+(global-set-key (kbd "C-s") 'isearch-forward-regexp)
+
+;; deft config
+(global-unset-key (kbd "C-x C-d"))
+(global-set-key (kbd "C-x C-d") 'deft)
+(setq deft-extensions '("txt" "tex" "org"))
+(setq deft-directory "~/notes")
+(setq deft-recursive t)
+
+;; indium
+(unless (package-installed-p 'indium)
+  (package-install 'indium))
+
+;; setup flypsell for text-mode
+(dolist (hook '(text-mode-hook))
+  (add-hook hook (lambda () (flyspell-mode 1))))
+(dolist (hook '(change-log-mode-hook log-edit-mode-hook))
+  (add-hook hook (lambda () (flyspell-mode -1))))
+
+
 
 ;; deft config
 (global-unset-key (kbd "C-x C-d"))
@@ -261,10 +282,59 @@
    "console.log('")
 (global-set-key (kbd "C-c C-l") 'consolelog)
 
+;; mocha shorthands
+(fset 'newmochadesc
+      "describe('', function() {});")
+(global-set-key (kbd "C-c d") 'newmochadesc)
+
+(fset 'newmochatest
+      "it('', function() {});")
+(global-set-key (kbd "C-c t") 'newmochatest)
+
+(fset 'newmochabefore
+      "beforeEach(function() {});")
+(global-set-key (kbd "C-c b") 'newmochabefore)
+
+(fset 'newmochaafter
+      "afterEach(function() {});")
+(global-set-key (kbd "C-c f") 'newmochaafter)
+
+
 (defun beflh-fix-quotes ()
   (interactive)
   (while (re-search-forward "\"" nil t)
     (replace-match "'")))
+
+(defun beflh-adaudio (n)
+  (interactive)
+  (shell-command (concat "osascript -e 'set Volume '" (number-to-string n))))
+
+(defun beflh-geaudio ()
+  (interactive)
+  (shell-command-to-string "osascript -e 'output volume of (get volume settings)'"))
+
+(defun beflh-seaudio ()
+  (setq mode-line-beflh-audiol (beflh-geaudio)))
+
+;; this is meant to be a jump off point for other scripts
+(defun tag-word-or-region (text-begin text-end)
+  "Surround current word or region with given text."
+  (interactive "sStart tag: \nsEnd tag: ")
+  (let (pos1 pos2 bds)
+    (if (and transient-mark-mode mark-active)
+        (progn
+          (goto-char (region-end))
+          (insert text-end)
+          (goto-char (region-beginning))
+          (insert text-begin))
+      (progn
+        (setq bds (bounds-of-thing-at-point 'symbol))
+        (goto-char (cdr bds))
+        (insert text-end)
+        (goto-char (car bds))
+        (insert text-begin)))))
+
+(setq js2-skip-preprocessor-directives t)
 
 ;; footer that FlyCheck insists on for whatever reason.
 (provide '.emacs)
