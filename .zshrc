@@ -16,28 +16,23 @@ calc() {
     python -c "print $*"
 }
 
-ed() {
-    command ed -p: "$@"
+cl() {
+    cat $1 | wc -l
+}
+
+ed() { command ed -p: "$@" }
+
+cmpr() {
+    tar czf $1.tar.gz $1
 }
 
 oi() {
     $2 | tail -n $1 | head -n1
 }
 
-##########
-## TMUX ##
-##########
-
-dtm() {
-    tmux start-server
-    tmux new-session -d 'dev'
-    tmux new-window -n 'dnm'
-    tmux new-window -n 'scr'
-    tmux new-window -n 'nde'
-    tmux new-window -n 'rby'
-    tmux new-window -n 'pyt'
-    tmux new-window -n 'rnd'
-    tmux attach
+# p[rint]f[irst]c[olumn]
+pfc() {
+    awk '{print $1}'
 }
 
 x() {
@@ -66,23 +61,32 @@ alias midi="fluidsynth -i ~/.midi/soundfont.sf2"
 alias dsclean="find . -name '.DS_Store' -type f -delete &"
 # start an http server at 127.0.0.1:8080 with ./index.html
 alias localserver='python3 -m http.server 8080'
+alias rt="tr 'A-Za-z' 'N-ZA-Mn-za-m'"
 # use pcregrep instead of crappy macgrep
 alias grep="pcregrep"
 alias ogrep="/usr/bin/grep"
+# clear ls = cls (not CLearScreen like on DOS)
+alias cls="clear; ls"
 # list directories
 alias lsd="echo -ne '\033[0;34m' && find . -type d -maxdepth 1 -not -name '.' | sed -e 's/\.\///' | column && echo -ne '\033[0m'"
 # node debug (for native modules)
 alias nodb="lldb -- `which node`"
 # list emacs buffers
 alias leb="emacsclient -e '(buffer-list)' | sed -E 's/>( )/\n/g' | tr -d \"#<buffer\" | sed -E 's/\( //g;s/>\)//g'"
+# list npm scripts
+alias scripts="cat package.json | sed -n '/\"scripts\"/,/},/ p'"
 # ls -l
 alias ll="ls -la"
 # node module descriptions
 alias nmd="for dir in node_modules/*; do echo "$dir:"; npm view `echo $dir | sed 's/node_modules\///'` | grep "description"; done"
+# kill teamserver
+alias kts="kill -9 $(ps aux | grep 'java' | grep 'tomcat' | awk '{ print $2 }')"
 # shorthand for curl: λ post '<json data>' <url>
 alias post="curl -w '; RESP_CODE:%{response_code}' -X POST -H 'Content-Type: application/json' -d"
 # tmux
 alias tm="TERM=\"xterm-256color\" tmux -u"
+# notification on macos
+alias notf="osascript -e 'display notification \"SIKE\"'"
 # strip a given file of escape sequences
 alias escs="sed -e 's/[\x01-\x1F\x7F]//g'"
 # redis daemon shorthand (typing that long name is a pain in the ass and this fits more with other database daemons)
@@ -91,13 +95,14 @@ alias redisd="redis-server"
 alias td="tr -d"
 # node version
 alias nv="node --version | td 'v'"
+# duckduck go
+alias ddg="lynx http://duckduckgo.com/"
 # pushd
 alias pd="pushd"
 # popd
 alias dp="popd"
-# clear docker containers
+# shamelessly stole bob's kill-whale
 alias kw="docker system prune -a --volumes"
-
 # single-char for most used commands
 alias l="ls -l"
 alias e="ec"

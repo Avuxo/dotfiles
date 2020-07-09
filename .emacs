@@ -1,14 +1,13 @@
 ;; Ben's emacs config file :^ )
-;; I use emacs compiled for XWindow / Cocoa because its marginally faster (usually)
-;; and has nicer colors with a lot less customization.
 
+;;; CODE:
 ;; list packages and install all in list
 (defvar package-list '(js2-mode))
 
 (setq package-archives '(("elpa" . "http://tromey.com/elpa/")
                          ("gnu" . "http://elpa.gnu.org/packages/")
                          ("marmalade" . "http://marmalade-repo.org/packages/")
-                         ("melpa-stable" . "https://stable.melpa.org/packages/")))
+                         ("melpa" . "http://melpa.milkbox.net/packages/")))
 
 (package-initialize)
 
@@ -42,6 +41,9 @@
  '(ansi-color-names-vector
    ["#272822" "#F92672" "#A6E22E" "#E6DB74" "#66D9EF" "#FD5FF0" "#A1EFE4" "#F8F8F2"])
  '(compilation-message-face (quote default))
+ '(custom-safe-themes
+   (quote
+    ("9568a88cf351728b05c983e7afa8ec3e08da00b16b25304feca2c044164bb3ce" "26ebf1964baf529f07ca121231bec4982a0d3e89f6897b19978edd91f8e1eddb" "8d8788b909824e7f491a600ad80b4f70d6571907879d7661651c93cf984fc947" "b33406bff03f0167fc1ce7da9f2bab6742db280e2cf083ec338ffd1176469ee6" "7ef2884658a1fed818a11854c232511fa25721c60083a2695e6ea34ce14777ee" "1bfb58637c50303c23d0f4ce1bb30a01ed722912aba5d1f0f13d7ac0e79a21fa" default)))
  '(fci-rule-color "#3C3D37")
  '(highlight-changes-colors (quote ("#FD5FF0" "#AE81FF")))
  '(highlight-tail-colors
@@ -56,6 +58,7 @@
      ("#3C3D37" . 100))))
  '(js-indent-level 2)
  '(magit-diff-use-overlays nil)
+ '(org-agenda-files (quote ("/tmp/benefits.org" "~/workspace/todo.org")))
  '(package-selected-packages
    (quote
     (yaml-mode deft rainbow-delimiters json-mode flycheck ido-vertical-mode neotree typescript-mode lua-mode web-mode pug-mode latex-math-preview go-mode powershell rust-mode js2-mode)))
@@ -124,8 +127,8 @@
 (global-set-key (kbd "M-SPC") 'set-mark-command)
 (global-set-key (kbd "C-x g") 'goto-line)
 (global-set-key (kbd "C-x C-j") 'count-matches)
-(global-set-key (kbd "C-q") (lambda()
-                              (interactive)(neotree)))
+;;(global-set-key (kbd "C-q") (lambda()
+;;                              (interactive)(neotree)))
 (setq neo-autorefresh nil)
 
 (require 'server)
@@ -138,6 +141,15 @@
 (global-set-key (kbd "C-x <down>") 'windmove-down)
 (global-set-key (kbd "C-x <left>") 'windmove-left)
 (global-set-key (kbd "C-x <right>") 'windmove-right)
+
+;; collapsing code
+(add-hook 'c-mode-common-hook
+  (lambda()
+    (local-set-key (kbd "C-c <right>") 'hs-show-block)
+    (local-set-key (kbd "C-c <left>")  'hs-hide-block)
+    (local-set-key (kbd "C-c <up>")    'hs-hide-all)
+    (local-set-key (kbd "C-c <down>")  'hs-show-all)
+    (hs-minor-mode t)))
 
 ;; company C stuff
 ;;(add-to-list 'company-backends 'company-c-headers)
@@ -189,12 +201,22 @@
 ;; add highlighting for TODO/WRITEME/WRITEME!/TODO/BUG
 (defun hilite-todos ()
   "Highlight TODOs and such."
-  (highlight-lines-matching-regexp "\\<\\(FIXME\\|WRITEME\\|WRITEME!\\|TODO\\|BUG\\):?"
-       'hi-pink-b)
-)
+  (highlight-lines-matching-regexp
+   "\\<\\(FIXME\\|WRITEME\\|WRITEME!\\|TODO\\|BUG\\):?"
+                                   'hi-pink-b)
+  )
+;; add highlighting for custom notes
+;; supported: @![:]? note; @(VULNERABILITY|vulnerability)[:]?
+(defun hilite-notes ()
+  (highlight-lines-matching-regexp
+   "\\<\\(@!\\|@VULNERABILITY\\|@vulnerability\\):?"
+   'hi-pink-b)
+  )
 
 (add-hook 'c-mode-common-hook 'hilite-todos)
+(add-hook 'c-mode-common-hook 'hilite-notes)
 (add-hook 'js2-mode-hook 'hilite-todos)
+(add-hook 'js2-mode-hook 'hilite-notes)
 
 ;; ido-vertical mode
 (ido-mode 1)
@@ -248,7 +270,9 @@
 (add-hook 'emacs-lisp-mode #'rainbow-delimiters-mode)
 
 ;; copy to killring.
+(global-unset-key (kbd "C-c C-q"))
 (global-set-key (kbd "C-c C-q") 'kill-ring-save)
+
 (global-unset-key (kbd "C-s"))
 (global-set-key (kbd "C-s") 'isearch-forward-regexp)
 
@@ -269,17 +293,9 @@
 (dolist (hook '(change-log-mode-hook log-edit-mode-hook))
   (add-hook hook (lambda () (flyspell-mode -1))))
 
-
-
-;; deft config
-(global-unset-key (kbd "C-x C-d"))
-(global-set-key (kbd "C-x C-d") 'deft)
-(setq deft-extensions '("txt" "tex" "org"))
-(setq deft-directory "~/notes")
-(setq deft-recursive t)
-
+;; general javascript shorthand
 (fset 'consolelog
-   "console.log('")
+      "console.log('")
 (global-set-key (kbd "C-c C-l") 'consolelog)
 
 ;; mocha shorthands
@@ -298,6 +314,13 @@
 (fset 'newmochaafter
       "afterEach(function() {});")
 (global-set-key (kbd "C-c f") 'newmochaafter)
+
+
+;; regexp replace
+(global-set-key (kbd "C-c o") 'replace-regexp)
+
+
+(global-set-key (kbd "C-:") 'execute-extended-command)
 
 
 (defun beflh-fix-quotes ()
@@ -334,8 +357,36 @@
         (goto-char (car bds))
         (insert text-begin)))))
 
+(defun my-web-mode-hook ()
+  "Hooks for Web mode."
+  (setq web-mode-markup-indent-offset 2)
+)
+(add-hook 'web-mode-hook  'my-web-mode-hook)
+
+(global-set-key (kbd "C-c C-l") 'consolelog)
+
+;; modeline configuration
+;; (setq-default mode-line-format
+;;       (list
+;;        "%@   "
+;;        " " mode-line-modified
+;;        "      " mode-line-buffer-identification
+;;        mode-line-misc-info
+;;        "A" (replace-regexp-in-string "\n$" ""  "    ")
+;;        "   " mode-line-position))
+
+;; (beflh-seaudio)
+;; (run-with-timer 0 5 'beflh-seaudio)
+
+;; js2 ignore shebang
 (setq js2-skip-preprocessor-directives t)
 
 ;; footer that FlyCheck insists on for whatever reason.
 (provide '.emacs)
 ;;; .emacs ends here
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ )
