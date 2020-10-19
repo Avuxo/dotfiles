@@ -1,0 +1,63 @@
+#!/usr/bin/env node
+'use strict';
+
+const axios = require('axios');
+const { fit } = require('furigana');
+
+const JishoApi = require('unofficial-jisho-api');
+const jisho = new JishoApi();
+
+const crypto = require('crypto');
+
+// usage node index.js "item1, item2, item3"
+const list = process.argv[2].split(',').map(s => s.trim());
+
+list.forEach(jp => {
+  jisho.searchForPhrase(jp).then(r => {
+    addCard(r.data[0]);
+  });
+});
+
+/**
+ * make the english definition list look nice
+ */
+function genEnglish(senses) {
+  return senses.map(s => s.english_definitions.join(', ')).join ('\n');
+}
+
+async function addCard(jp) {
+  // makes verifying easier because I can search for the hash in anki
+  let hash = crypto.createHash('md5').update(jp.slug).digest('hex');
+
+  const kanji = jp.slug;
+  let furigana;
+  // take the most common reading
+  try {
+    furigana = fit(jp.japanese[0].word, jp.japanese[0].reading);
+  } catch(e) {
+    furigana = jp.japanese[0].reading;
+  }
+
+  const english = genEnglish(jp.senses);
+
+  // build an ankiconnect request out
+  const request = {
+    action: 'addNote',
+    version: 6,
+    params: {
+      note: {
+        deckName: 'Core 2000',
+        modelName: 'Core 2000',
+        fields: {
+          'Optimized-Voc-Index': hash,
+          'Vocabulary-Kanji': kanji,
+          'Vocabulary-Furigana': furigana,
+          'Vocabulary-English': english
+        }
+      }
+    }
+  };
+
+  const result = await axios.post('http://127.0.0.1:8765', request);
+  console.log(`added card ${result.data.result}`);
+}
