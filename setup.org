@@ -5,3 +5,9 @@
   #+BEGIN_SRC bash
 go install golang.org/x/tools/gopls@latest
   #+END_SRC
+- dlv
+#+BEGIN_SRC bash
+go install github.com/go-delve/delve/cmd/dlv@latest
+#+END_SRC
+- emacs-plus (macOS)
+  - [[https://github.com/d12frosted/homebrew-emacs-plus#install][github]]
