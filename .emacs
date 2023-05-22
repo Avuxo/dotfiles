@@ -7,6 +7,7 @@
 		     ido-vertical-mode
 		     flycheck
 		     ace-jump-mode
+                     exec-path-from-shell
 
 		     ;; language major modes
 		     go-mode
@@ -16,6 +17,12 @@
 
                      ;; visual stuff
                      monokai-theme
+
+                     ;; IDE nonsense
+                     company
+                     lsp-mode
+                     lsp-ui
+                     yasnippet
 		     ))
 
 ;; add melpa to package archive list and install missing packages
@@ -33,7 +40,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;; load theme
-(load-theme 'monokai)
+(load-theme 'monokai t)
 
 ;; disable scroll bar and ugly menu bar
 (menu-bar-mode -1)
@@ -48,6 +55,9 @@
 (setq column-number-mode t)
 ;;turn on parenthesis highlighting
 (show-paren-mode 1)
+
+;; add path var for OSX
+(exec-path-from-shell-initialize)
 
 ;; add highlighting for TODOs
 (defun hilite-todos ()
@@ -91,6 +101,24 @@
 
 
 (define-key global-map (kbd "C-c SPC") 'ace-jump-mode)
+
+(global-set-key (kbd "C-x C-b") 'ibuffer)
+(autoload 'ibuffer "ibuffer" "List buffers." t)
+
+;; Company mode
+(setq company-idle-delay 0)
+(setq company-minimum-prefix-length 1)
+
+;; Go - lsp-mode
+;; Set up before-save hooks to format buffer and add/delete imports.
+(defun lsp-go-install-save-hooks ()
+  (add-hook 'before-save-hook #'lsp-format-buffer t t)
+  (add-hook 'before-save-hook #'lsp-organize-imports t t))
+(add-hook 'go-mode-hook #'lsp-go-install-save-hooks)
+
+;; Start LSP Mode and YASnippet mode
+(add-hook 'go-mode-hook #'lsp-deferred)
+(add-hook 'go-mode-hook #'yas-minor-mode)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;; language mode configs;;;;
@@ -142,6 +170,12 @@
       "// TODO(Ben): ")
 (global-set-key (kbd "C-c C-r") 'todo-mk)
 
+;;;;;;;;;;;;;;;;;;;
+;;;; IDE stuff ;;;;
+;;;;;;;;;;;;;;;;;;;
+
+(add-hook 'after-init-hook 'global-company-mode)
+
 ;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;; generated stuff;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;
@@ -154,7 +188,7 @@
  '(custom-safe-themes
    '("78e6be576f4a526d212d5f9a8798e5706990216e9be10174e3f3b015b8662e27" default))
  '(package-selected-packages
-   '(monokai-theme web-mode rust-mode flycheck ido-vertical-mode js2-mode go-mode ace-jump-mode)))
+   '(yasnippet lsp-ui lsp-mode exec-path-from-shell company monokai-theme web-mode rust-mode flycheck ido-vertical-mode js2-mode go-mode ace-jump-mode)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.

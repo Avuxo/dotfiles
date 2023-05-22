@@ -1,0 +1,7 @@
+* Emacs
+** Necessary Software
+- gopls
+  - post install ensure that it's in the PATH
+  #+BEGIN_SRC bash
+go install golang.org/x/tools/gopls@latest
+  #+END_SRC
