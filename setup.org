@@ -9,5 +9,6 @@ go install golang.org/x/tools/gopls@latest
 #+BEGIN_SRC bash
 go install github.com/go-delve/delve/cmd/dlv@latest
 #+END_SRC
+  - put dap-debug.el in ~/.emacs.d
 - emacs-plus (macOS)
   - [[https://github.com/d12frosted/homebrew-emacs-plus#install][github]]
