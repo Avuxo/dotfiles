@@ -14,6 +14,7 @@
 		     js2-mode
 		     rust-mode
 		     web-mode
+                     protobuf-mode
 
                      ;; visual stuff
                      monokai-theme
@@ -138,40 +139,6 @@ Image types are symbols like `xbm' or `jpeg'."
 (add-to-list 'auto-mode-alist '("\\.html$" . web-mode))
 (setq js2-skip-preprocessor-directives t) ;; ignore shebang
 
-;;;;;;;;;;;;;;;;;;;;;;;
-;;;; emacs keybinds;;;;
-;;;;;;;;;;;;;;;;;;;;;;;
-
-;; window moving
-(global-set-key (kbd "C-x <up>") 'windmove-up)
-(global-set-key (kbd "C-x <down>") 'windmove-down)
-(global-set-key (kbd "C-x <left>") 'windmove-left)
-(global-set-key (kbd "C-x <right>") 'windmove-right)
-
-(setq x-alt-keysym 'meta)
-
-;; misc. one-off binds
-(global-set-key (kbd "M-SPC") 'set-mark-command)
-(global-set-key (kbd "C-x g") 'goto-line)
-(global-set-key (kbd "C-x C-j") 'count-matches)
-(global-set-key (kbd"C-x C-y") 'eshell)
-(global-set-key (kbd "C-:") 'execute-extended-command)
-
-;; use regex search and not literal match
-(global-unset-key (kbd "C-s"))
-(global-set-key (kbd "C-s") 'isearch-forward-regexp)
-;; use regex search and not literal replace
-(global-unset-key (kbd "C-x s"))
-(global-set-key (kbd "C-x s") 'replace-regexp)
-
-;; insertion macros
-(fset 'consolelog ;; insert console.log for javascript
-      "console.log('")
-(global-set-key (kbd "C-c C-l") 'consolelog)
-(fset 'todo-mk ;; insert TODOs
-      "// TODO(Ben): ")
-(global-set-key (kbd "C-c C-r") 'todo-mk)
-
 ;;;;;;;;;;;;;;;;;;;
 ;;;; IDE stuff ;;;;
 ;;;;;;;;;;;;;;;;;;;
@@ -196,8 +163,47 @@ Image types are symbols like `xbm' or `jpeg'."
 (add-hook 'go-mode-hook #'lsp-deferred)
 (add-hook 'go-mode-hook #'yas-minor-mode)
 
+;;;;;;;;;;;;;;;;;;;;;;;
+;;;; emacs keybinds;;;;
+;;;;;;;;;;;;;;;;;;;;;;;
+
+;; window moving
+(global-set-key (kbd "C-x <up>") 'windmove-up)
+(global-set-key (kbd "C-x <down>") 'windmove-down)
+(global-set-key (kbd "C-x <left>") 'windmove-left)
+(global-set-key (kbd "C-x <right>") 'windmove-right)
+
+(setq x-alt-keysym 'meta)
+
+;; misc. one-off binds
+(global-set-key (kbd "M-SPC") 'set-mark-command)
+(global-set-key (kbd "C-x g") 'goto-line)
+(global-set-key (kbd "C-x C-j") 'count-matches)
+(global-set-key (kbd"C-x C-y") 'eshell)
+(global-set-key (kbd "C-:") 'execute-extended-command)
+
+;; use regex search and not literal match
+(global-unset-key (kbd "C-s"))
+(global-set-key (kbd "C-s") 'isearch-forward-regexp)
+;; use regex replace and not literal replace
+(global-unset-key (kbd "C-x s"))
+(global-set-key (kbd "C-x s") 'replace-regexp)
+
+;; insertion macros
+(fset 'consolelog ;; insert console.log for javascript
+      "console.log('")
+(global-set-key (kbd "C-c C-l") 'consolelog)
+(fset 'todo-mk ;; insert TODOs
+      "// TODO(Ben): ")
+(global-set-key (kbd "C-c C-r") 'todo-mk)
 
 
+;; dap keybinds
+(global-set-key (kbd "C-c C-u") 'dap-breakpoint-toggle)
+(global-set-key (kbd "C-c C-i") 'dap-debug)
+
+;; load dap configs
+(load-file "~/.emacs.d/dap-config.el")
 
 ;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;; generated stuff;;;;
@@ -211,7 +217,7 @@ Image types are symbols like `xbm' or `jpeg'."
  '(custom-safe-themes
    '("78e6be576f4a526d212d5f9a8798e5706990216e9be10174e3f3b015b8662e27" default))
  '(package-selected-packages
-   '(dap-mode yasnippet lsp-ui lsp-mode exec-path-from-shell company monokai-theme web-mode rust-mode flycheck ido-vertical-mode js2-mode go-mode ace-jump-mode)))
+   '(protobuf-mode dap-mode yasnippet lsp-ui lsp-mode exec-path-from-shell company monokai-theme web-mode rust-mode flycheck ido-vertical-mode js2-mode go-mode ace-jump-mode)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
