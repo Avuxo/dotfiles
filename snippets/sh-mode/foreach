@@ -1,0 +1,10 @@
+# -*- mode: snippet -*-
+# name: bash foreach
+# key: foreach
+# group: bash
+# --
+
+for ${0:i} in "${${1:name}[@]}"; do
+    $2
+done
+
