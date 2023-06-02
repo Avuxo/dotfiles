@@ -15,6 +15,8 @@
 		     rust-mode
 		     web-mode
                      protobuf-mode
+                     yaml-mode
+                     dockerfile-mode
 
                      ;; visual stuff
                      monokai-theme
@@ -123,6 +125,11 @@ Image types are symbols like `xbm' or `jpeg'."
 (global-set-key (kbd "C-x C-b") 'ibuffer)
 (autoload 'ibuffer "ibuffer" "List buffers." t)
 
+;; yas config
+(global-set-key (kbd "C-=") 'yas-expand)
+(add-hook 'emacs-startup-hook (lambda () (yas-load-directory "~/.emacs.d/snippets")))
+(yas-global-mode)
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;; language mode configs;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -217,7 +224,7 @@ Image types are symbols like `xbm' or `jpeg'."
  '(custom-safe-themes
    '("78e6be576f4a526d212d5f9a8798e5706990216e9be10174e3f3b015b8662e27" default))
  '(package-selected-packages
-   '(protobuf-mode dap-mode yasnippet lsp-ui lsp-mode exec-path-from-shell company monokai-theme web-mode rust-mode flycheck ido-vertical-mode js2-mode go-mode ace-jump-mode)))
+   '(ido-completing-read+ amx dockerfile-mode yaml-mode protobuf-mode dap-mode yasnippet lsp-ui lsp-mode exec-path-from-shell company monokai-theme web-mode rust-mode flycheck ido-vertical-mode js2-mode go-mode ace-jump-mode)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
