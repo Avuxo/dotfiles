@@ -21,6 +21,8 @@ autoinstalls=(
     wget
     emacs-plus@30
     emacsclient
+    fdfind
+    grpcurl
 )
 
 # formulae that have manual setup steps but I don't want to forget
