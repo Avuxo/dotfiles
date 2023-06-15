@@ -4,7 +4,7 @@
 # group: bash
 # --
 
-for ${0:i} in "${${1:name}[@]}"; do
+for ${0:i} in "\${${1:name}[@]}"; do
     $2
 done
 
